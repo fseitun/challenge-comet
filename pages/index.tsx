@@ -1,14 +1,17 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 
-import styles from '../styles/Home.module.css';
+import { Fees } from '../components/Fees';
 import { useStudents } from '../utils/useStudents';
 import { useOrders } from '../utils/useOrders';
 import { Student, Order } from '../types';
+import styles from '../styles/Home.module.css';
+
+const studentId = '3b35fb50-3d5e-41b3-96d6-c5566141fab0';
 
 const Home: NextPage = () => {
-  const student: Student | null = useStudents('1');
-  const orders: Order[] | null = useOrders('1');
+  const selecterdStudent: Student | null = useStudents(studentId);
+  const studentOrders: Order[] | null = useOrders(studentId);
 
   return (
     <div className={styles.container}>
@@ -19,8 +22,12 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        {student?.first_name}
-        {orders?.[0].name}
+        {/* <Status student={selecterdStudent} /> */}
+        <Fees type={'PAID'} orders={studentOrders} />
+        ------------------------------------------
+        <Fees type={'DUE'} orders={studentOrders} />
+        ------------------------------------------
+        <Fees type={'OUTSTANDING'} orders={studentOrders} />
       </main>
     </div>
   );
