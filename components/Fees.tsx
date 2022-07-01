@@ -3,9 +3,10 @@ import { Student, Order } from '../types';
 interface Props {
   type: 'PAID' | 'DUE' | 'OUTSTANDING';
   orders: Order[] | null;
+  setTotal: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export function Fees({ type, orders }: Props) {
+export function Fees({ type, orders, setTotal }: Props) {
   if (type === 'PAID') {
     const ordersToDisplay = orders?.filter(order => order.status.toUpperCase() === type);
 
