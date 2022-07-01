@@ -1,4 +1,11 @@
+import { useState } from 'react';
+import Checkbox from '@mui/material/Checkbox';
+
 import { Student, Order } from '../types';
+
+interface CheckedIds {
+  [key: string]: boolean;
+}
 
 interface Props {
   type: 'PAID' | 'DUE' | 'OUTSTANDING';
@@ -7,6 +14,10 @@ interface Props {
 }
 
 export function Fees({ type, orders, setTotal }: Props) {
+  const [checkedIds, setCheckedIds] = useState<CheckedIds>({});
+
+  console.log(checkedIds);
+
   if (type === 'PAID') {
     const ordersToDisplay = orders?.filter(order => order.status.toUpperCase() === type);
 
@@ -32,6 +43,7 @@ export function Fees({ type, orders, setTotal }: Props) {
             <div>{orders.name}</div>
             <div>{stringToMoney(orders.interest)}</div>
             <div>{stringToMoney(orders.price)}</div>
+            <Checkbox onChange={e => feeAdder(e.target.checked, orders, setCheckedIds, setTotal)} />
             {orders.payin?.created && <div>{dateStringWithTimezoneToString(orders.payin.created)}</div>}
           </div>
         ))}
@@ -78,4 +90,15 @@ function stringToMoney(string: string) {
   });
 
   return formatter.format(Number(string));
+}
+
+function feeAdder(
+  checked: boolean,
+  orders: Order,
+  setCheckedIds: React.Dispatch<React.SetStateAction<CheckedIds>>,
+  setTotal: React.Dispatch<React.SetStateAction<number>>
+) {
+  const addIfCheckedOrSubtractIfUnchecked = checked ? 1 : -1;
+  setTotal(previousTotal => previousTotal + addIfCheckedOrSubtractIfUnchecked * (Number(orders.price) + Number(orders.interest)));
+  setCheckedIds(previousCheckedIds => ({ ...previousCheckedIds, [orders.id]: !previousCheckedIds[orders.id] }));
 }

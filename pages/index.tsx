@@ -14,6 +14,8 @@ const studentId = '3b35fb50-3d5e-41b3-96d6-c5566141fab0';
 const Home: NextPage = () => {
   const [total, setTotal] = useState(0);
 
+  console.log(total);
+
   const selecterdStudent: Student | null = useStudents(studentId);
   const studentOrders: Order[] | null = useOrders(studentId);
 
