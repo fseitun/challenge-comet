@@ -1,3 +1,4 @@
+import { Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { Student } from '../types';
 import { stringToMoney } from './stringToMoney';
@@ -13,12 +14,16 @@ export function Status({ student, totalToPay }: Props) {
 
   return (
     <>
-      <Typography variant="subtitle1" gutterBottom>
-        {student?.first_name} {student?.last_name} {student?.cohort}
-      </Typography>
-      <Typography variant="h6" gutterBottom>
-        Total a Pagar: {totalWithDashedCero}
-      </Typography>
+      <Stack direction="row" justifyContent="space-between">
+        <Typography variant="subtitle1">
+          {student?.first_name} {student?.last_name}
+        </Typography>
+        <Typography variant="subtitle1">{student?.cohort}</Typography>
+      </Stack>
+      <Stack direction="row" justifyContent="space-between">
+        <Typography variant="subtitle1">Total a Pagar:</Typography>
+        <Typography variant="h6"> {totalWithDashedCero}</Typography>
+      </Stack>
     </>
   );
 }

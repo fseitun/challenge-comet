@@ -33,11 +33,8 @@ const Home: NextPage = () => {
       <Container maxWidth="sm">
         <Box sx={{ my: 4 }}>
           <Status student={selecterdStudent} totalToPay={total} />
-          ------------------------------------------
           <Fees type={'PAID'} orders={studentOrders} />
-          ------------------------------------------
           <Fees type={'DUE'} orders={studentOrders} setTotal={setTotal} />
-          ------------------------------------------
           <Fees type={'OUTSTANDING'} orders={studentOrders} setTotal={setTotal} />
         </Box>
       </Container>

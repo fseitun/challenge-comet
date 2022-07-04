@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
+import Typography from '@mui/material/Typography';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { Order } from '../types';
 import { stringToMoney } from './stringToMoney';
+import Stack from '@mui/material/Stack';
 
 interface CheckedIds {
   [key: string]: boolean;
@@ -21,49 +27,121 @@ export function Fees({ type, orders, setTotal }: Props) {
     const ordersToDisplay = orders?.filter(order => order.status.toUpperCase() === type);
 
     return (
-      <>
-        <div>{type}</div>
-        {ordersToDisplay?.map(orders => (
-          <div key={orders.id}>
-            <div>{orders.name}</div>
-            {orders.payin?.created && <div>{dateStringWithTimezoneToString(orders.payin.created)}</div>}
-          </div>
-        ))}
-      </>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+          <Stack>
+            <Typography style={{ fontWeight: 800 }} variant="h6">
+              Cuotas pagadas
+            </Typography>
+            <Typography style={{ fontWeight: 300, fontSize: '13px' }} variant="subtitle2">
+              Dale click para expandir
+            </Typography>
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails>
+          {ordersToDisplay?.map(orders => (
+            <div key={orders.id}>
+              <Typography style={{ fontWeight: 400 }} variant="subtitle1">
+                {orders.name}
+              </Typography>
+              {orders.payin?.created && (
+                <Typography style={{ fontWeight: 400, fontSize: '12px' }} variant="subtitle1">
+                  Cancelada el {dateStringWithTimezoneToString(orders.payin.created)}
+                </Typography>
+              )}
+            </div>
+          ))}
+        </AccordionDetails>
+      </Accordion>
     );
   } else if (type === 'DUE' && setTotal !== undefined) {
     const ordersToDisplay = orders?.filter(order => order.status.toUpperCase() === type);
 
     return (
-      <>
-        <div>{type}</div>
-        {ordersToDisplay?.map(orders => (
-          <div key={orders.id}>
-            <div>{orders.name}</div>
-            <div>{stringToMoney(orders.interest)}</div>
-            <div>{stringToMoney(orders.price)}</div>
-            <Checkbox onChange={e => feeAdder(e.target.checked, orders, setCheckedIds, setTotal)} />
-            {orders.payin?.created && <div>{dateStringWithTimezoneToString(orders.payin.created)}</div>}
-          </div>
-        ))}
-      </>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+          <Stack>
+            <Typography style={{ fontWeight: 800 }} variant="h6">
+              Cuotas pendientes
+            </Typography>
+            <Typography style={{ fontWeight: 300, fontSize: '13px' }} variant="subtitle2">
+              Dale click para expandir
+            </Typography>
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails>
+          {ordersToDisplay?.map(orders => (
+            <div key={orders.id}>
+              <Stack direction="row" justifyContent="space-between">
+                <Stack>
+                  <Typography style={{ fontWeight: 400 }} variant="subtitle1">
+                    {orders.name}
+                  </Typography>
+                  {orders.due && (
+                    <Typography style={{ fontWeight: 400, fontSize: '12px' }} variant="subtitle1">
+                      Vence el {dateStringWithTimezoneToString(orders.due)}
+                    </Typography>
+                  )}
+                </Stack>
+                <Stack style={{ float: 'right' }}>
+                  <Typography style={{ fontWeight: 400, fontSize: '16px' }} variant="subtitle1">
+                    {stringToMoney(orders.price)}
+                  </Typography>
+                  <Typography style={{ fontWeight: 400, fontSize: '12px' }} variant="subtitle1">
+                    Interés: {stringToMoney(orders.interest)}
+                  </Typography>
+                </Stack>
+                <Checkbox style={{ width: 'min-content' }} onChange={e => feeAdder(e.target.checked, orders, setCheckedIds, setTotal)} />
+              </Stack>
+            </div>
+          ))}
+        </AccordionDetails>
+      </Accordion>
     );
   } else if (type === 'OUTSTANDING' && setTotal !== undefined) {
     const ordersToDisplay = orders?.filter(order => order.status.toUpperCase() === type);
 
     return (
-      <>
-        <div>{type}</div>
-        {ordersToDisplay?.map(orders => (
-          <div key={orders.id}>
-            <div>{orders.name}</div>
-            <div>{dateStringWithoutTimezoneToString(orders.due)}</div>
-            <div>{stringToMoney(orders.price)}</div>
-            <Checkbox onChange={e => feeAdder(e.target.checked, orders, setCheckedIds, setTotal)} />
-            {orders.payin?.created && <div>{dateStringWithTimezoneToString(orders.payin.created)}</div>}
-          </div>
-        ))}
-      </>
+      <Accordion>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" id="panel1a-header">
+          <Stack>
+            <Typography style={{ fontWeight: 800 }} variant="h6">
+              Cuotas futuras
+            </Typography>
+            <Typography style={{ fontWeight: 300, fontSize: '13px' }} variant="subtitle2">
+              Dale click para expandir
+            </Typography>
+          </Stack>
+        </AccordionSummary>
+        <AccordionDetails>
+          {ordersToDisplay?.map(orders => (
+            <div key={orders.id}>
+              <Stack direction="row" justifyContent="space-between">
+                <Stack>
+                  <Typography style={{ fontWeight: 400 }} variant="subtitle1">
+                    {orders.name}
+                  </Typography>
+                  {orders.due && (
+                    <Typography style={{ fontWeight: 400, fontSize: '12px' }} variant="subtitle1">
+                      Vence el {dateStringWithTimezoneToString(orders.due)}
+                    </Typography>
+                  )}
+                </Stack>
+                <Stack style={{ float: 'right' }}>
+                  {/* TODO check discount and correct if it exists on API */}
+                  <Typography style={{ fontWeight: 400, fontSize: '16px' }} variant="subtitle1">
+                    {stringToMoney(orders.price)}
+                  </Typography>
+                  {/* <Typography style={{ fontWeight: 400, fontSize: '12px' }} variant="subtitle1">
+                    Ahorras: {stringToMoney(orders.discount)}
+                  </Typography> */}
+                </Stack>
+                <Checkbox style={{ width: 'min-content' }} onChange={e => feeAdder(e.target.checked, orders, setCheckedIds, setTotal)} />
+              </Stack>
+            </div>
+          ))}
+        </AccordionDetails>
+      </Accordion>
     );
   } else {
     return null;
