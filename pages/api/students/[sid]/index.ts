@@ -3,7 +3,6 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Student } from '../../../../types';
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Student>) {
-  console.log('test');
   res.status(200).json({
     id: '3b35fb50-3d5e-41b3-96d6-c5566141fab0',
     first_name: 'Mateo',
