@@ -5,7 +5,7 @@ export default function Custom404() {
   const [environmentUrl, setEnvironmentUrl] = useState('');
 
   useEffect(() => {
-    setEnvironmentUrl(`${window.location.href}dc438d87-18fc-4f65-8927-d860d1496795`);
+    setEnvironmentUrl(`${window.location.href}3b35fb50-3d5e-41b3-96d6-c5566141fab0`);
   }, []);
 
   return (

@@ -19,6 +19,8 @@ const Home: NextPage = () => {
   const router = useRouter();
   const { studentId } = router.query;
 
+  console.log(studentId, 'router');
+
   const selecterdStudent: Student | null = useStudents(studentId as string);
   const studentOrders: Order[] | null = useOrders(studentId as string);
 
