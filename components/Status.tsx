@@ -1,4 +1,5 @@
 import { Student } from '../types';
+import { stringToMoney } from './stringToMoney';
 
 interface Props {
   student: Student | null;
@@ -6,12 +7,13 @@ interface Props {
 }
 
 export function Status({ student, totalToPay }: Props) {
-  console.log(student, totalToPay);
+  const total = stringToMoney(String(totalToPay));
+
   return (
     <div>
       {student?.first_name}
       {student?.last_name}
-      {student?.cohort}Total a Pagar{totalToPay}
+      {student?.cohort}Total a Pagar{total}
     </div>
   );
 }

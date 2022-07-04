@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 
-import { Student, Order } from '../types';
+import { Order } from '../types';
+import { stringToMoney } from './stringToMoney';
 
 interface CheckedIds {
   [key: string]: boolean;
@@ -10,13 +11,11 @@ interface CheckedIds {
 interface Props {
   type: 'PAID' | 'DUE' | 'OUTSTANDING';
   orders: Order[] | null;
-  setTotal: React.Dispatch<React.SetStateAction<number>>;
+  setTotal?: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function Fees({ type, orders, setTotal }: Props) {
   const [checkedIds, setCheckedIds] = useState<CheckedIds>({});
-
-  console.log(checkedIds);
 
   if (type === 'PAID') {
     const ordersToDisplay = orders?.filter(order => order.status.toUpperCase() === type);
@@ -32,7 +31,7 @@ export function Fees({ type, orders, setTotal }: Props) {
         ))}
       </>
     );
-  } else if (type === 'DUE') {
+  } else if (type === 'DUE' && setTotal !== undefined) {
     const ordersToDisplay = orders?.filter(order => order.status.toUpperCase() === type);
 
     return (
@@ -49,7 +48,7 @@ export function Fees({ type, orders, setTotal }: Props) {
         ))}
       </>
     );
-  } else if (type === 'OUTSTANDING') {
+  } else if (type === 'OUTSTANDING' && setTotal !== undefined) {
     const ordersToDisplay = orders?.filter(order => order.status.toUpperCase() === type);
 
     return (
@@ -60,11 +59,14 @@ export function Fees({ type, orders, setTotal }: Props) {
             <div>{orders.name}</div>
             <div>{dateStringWithoutTimezoneToString(orders.due)}</div>
             <div>{stringToMoney(orders.price)}</div>
+            <Checkbox onChange={e => feeAdder(e.target.checked, orders, setCheckedIds, setTotal)} />
             {orders.payin?.created && <div>{dateStringWithTimezoneToString(orders.payin.created)}</div>}
           </div>
         ))}
       </>
     );
+  } else {
+    return null;
   }
 }
 
@@ -82,23 +84,17 @@ function dateStringWithoutTimezoneToString(date: string) {
   return dateStringWithTimezoneToString(dateWithTimeZone);
 }
 
-function stringToMoney(string: string) {
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  });
-
-  return formatter.format(Number(string));
-}
-
 function feeAdder(
   checked: boolean,
   orders: Order,
   setCheckedIds: React.Dispatch<React.SetStateAction<CheckedIds>>,
   setTotal: React.Dispatch<React.SetStateAction<number>>
 ) {
+  const price = Number(orders.price);
+  const interest = isNaN(Number(orders.interest)) ? 0 : Number(orders.interest);
+  // const discount = Number(orders.discount) === 'number' ? Number(orders.discount) : 0; //TODO check API for discount!!!
   const addIfCheckedOrSubtractIfUnchecked = checked ? 1 : -1;
-  setTotal(previousTotal => previousTotal + addIfCheckedOrSubtractIfUnchecked * (Number(orders.price) + Number(orders.interest)));
+
+  setTotal(previousTotal => previousTotal + addIfCheckedOrSubtractIfUnchecked * (price + interest));
   setCheckedIds(previousCheckedIds => ({ ...previousCheckedIds, [orders.id]: !previousCheckedIds[orders.id] }));
 }
