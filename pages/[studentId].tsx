@@ -29,6 +29,7 @@ const Home: NextPage = () => {
       <Head>
         <title>Cometa School App</title>
         <meta name="Cometa School App" content="Cometa School App" />
+        <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests"></meta>
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
