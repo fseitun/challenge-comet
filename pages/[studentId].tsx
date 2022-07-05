@@ -22,6 +22,8 @@ const Home: NextPage = () => {
   const selecterdStudent: Student | null = useStudents(studentId as string);
   const studentOrders: Order[] | null = useOrders(studentId as string);
 
+  console.log(studentOrders);
+
   return (
     <>
       <Head>

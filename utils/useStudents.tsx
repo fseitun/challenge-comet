@@ -13,7 +13,7 @@ export function useStudents(studentId: string): Student | null {
   });
 
   useEffect(() => {
-    fetch(`http://ec2-3-239-221-74.compute-1.amazonaws.com:8000/api/v1/students/${studentId}`, {
+    fetch(`https://ec2-3-239-221-74.compute-1.amazonaws.com:8000/api/v1/students/${studentId}`, {
       method: 'GET',
       headers: {
         hash: 'OcJn4jYChW',
